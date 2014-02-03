@@ -25,7 +25,7 @@ get preprocessed!
 from hamlike import Hamlike
 
 h = Hamlike('%h1 -> Hello, World!', 'filename')
-print(h.block)
+print(h.block.data)
 ```
 
 #### CLI
@@ -46,6 +46,7 @@ python -m dg -m hamlike < input_file > output_file
     // Tags use standard HTML syntax for attributes.
     %meta charset="utf-8"
     // Everything until the end of the line OR the next `->` is an attribute.
+    // An arrow is equivalent to a line break and a 2-space indent.
     %title -> A simple page
     // `-` starts a Jinja control statement;
     // `=` is a Jinja expression.
