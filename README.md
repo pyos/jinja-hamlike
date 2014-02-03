@@ -1,6 +1,7 @@
-## hamlike for Jinja2
+## hamlike
 
-A minimalistic indentation-sensitive markup preprocessor
+A minimalistic indentation-sensitive markup preprocessor for
+[Jinja2](http://jinja.pocoo.org/docs/).
 
 ### Usage
 
@@ -14,6 +15,9 @@ environment.add_extension(HamlikeExtension)
 
 where `environment` is an [Environment](http://jinja.pocoo.org/docs/api/#high-level-api) instance
 (e.g. `jinja_env` attribute of [Flask](http://flask.pocoo.org/docs/api/#application-object) objects.)
+
+After you do that, any file with the `.hamlike` extension will automatically
+get preprocessed!
 
 #### Stand-alone
 
