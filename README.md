@@ -54,24 +54,19 @@ python -m dg -m hamlike < input_file > output_file
     // Everything until the end of the line OR the next `->` is an attribute.
     // An arrow is equivalent to a line break and a 2-space indent.
     %title -> A simple page
-    // `-` starts a Jinja control statement;
-    // `=` is a Jinja expression.
-    -block styles
-      -set style = "normal.css"
-      // You can use standard Jinja syntax in tags and content, too.
-      %link rel="stylesheet" href="/css/{{ style }}"
   %body
+    // `-` starts a Jinja control statement, `=` - an expression.
     // Control statements are also indentation-sensitive.
     -if 1 > 0
       -set greeting = "Hello, World!"
     -else
       -set greeting = "Oh crap."
-    %h1 -> =greeting
+    %p -> =greeting
     // If you want a literal line starting with any of the special
     // characters, prefix it with `\`.
     \- is a literal dash.
     \\ this applies to <code>\</code> itself, too.
-    // Oh, and inline HTML is allowed, too.
-    %footer class="text-muted"
-      That's all!
+    // Oh, and inline HTML/Jinja tags are allowed, too.
+    %footer class="text-{{ 'muted' }}"
+      <p>That's all!</p>
 ```
