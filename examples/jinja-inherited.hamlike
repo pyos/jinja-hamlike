@@ -1,0 +1,14 @@
+-extends "jinja-base.hamlike"
+
+-block title
+  Starter Template for Bootstrap
+
+-block styles
+  %link href="static/css/bootstrap.hamlike.css" rel="stylesheet"
+
+-block content
+  %h1 -> Bootstrap starter template
+  %p class="lead"
+    Use this document as a way to quickly start any new project.<br>
+    All you get is this text and a mostly barebones HTML document.<br>
+    (Also, it appears you're using Flask & Jinja.)
