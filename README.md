@@ -1,7 +1,13 @@
 ## hamlike
 
-A minimalistic indentation-sensitive markup preprocessor for
-[Jinja2](http://jinja.pocoo.org/docs/).
+A minimalistic indentation-sensitive HTML preprocessor.
+
+### Requirements
+
+ * Mandatory: [dg](http://pyos.github.io/dg/)
+ * Indirect: CPython/PyPy 3.3+
+ * Optional: [Jinja2](http://jinja.pocoo.org/)
+ * Recommended: [Flask](http://flask.pocoo.org/)
 
 ### Usage
 
@@ -13,8 +19,8 @@ from hamlike import HamlikeExtension
 environment.add_extension(HamlikeExtension)
 ```
 
-where `environment` is an [Environment](http://jinja.pocoo.org/docs/api/#high-level-api) instance
-(e.g. `jinja_env` attribute of [Flask](http://flask.pocoo.org/docs/api/#application-object) objects.)
+where `environment` is an [Environment instance](http://jinja.pocoo.org/docs/api/#high-level-api)
+(e.g. `jinja_env` attribute of [Flask objects](http://flask.pocoo.org/docs/api/#application-object).)
 
 After you do that, any file with the `.hamlike` extension will automatically
 get preprocessed!
