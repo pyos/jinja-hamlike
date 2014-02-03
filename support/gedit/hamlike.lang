@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="hamlike" _name="Hamlike" version="2.0" _section="Markup">
+  <metadata>
+    <property name="mimetypes">text/x-hamlish</property>
+    <property name="globs">*.hamlike</property>
+  </metadata>
+
+  <styles>
+    <style id="attribute-name"  _name="Attribute" map-to="html:attrib-name"/>
+    <style id="comment"         _name="Comment"   map-to="html:comment"/>
+    <style id="tag"             _name="Tag"       map-to="html:tag"/>
+    <style id="keyword"         _name="Keyword"   map-to="def:keyword"/>
+  </styles>
+
+  <definitions>
+    <context id="hamlike">
+      <include>
+        <context end-at-line-end="true">
+          <start>^ *</start>
+          <end>$</end>
+          
+          <include>
+            <context style-ref="comment">
+              <match>\/\/.*$</match>
+            </context>
+
+            <context>
+              <start>%!?[a-z0-9_-]+</start>
+              <end>&gt;|$</end>
+              <include>
+                <context sub-pattern="0" where="start" style-ref="tag"/>
+                <context sub-pattern="0" where="end"   style-ref="attribute-name"/>
+                <context ref="html:generic-tag"/>
+              </include>
+            </context>
+            
+            <context>
+              <start>=|-[a-zA-Z]+</start>
+              <end>$</end>
+
+              <include>
+                <context sub-pattern="0" where="start" style-ref="keyword"/>
+                <context sub-pattern="0" where="end"   style-ref="keyword"/>
+                <context ref="python:python"/>
+              </include>
+            </context>
+            
+            <context>
+              <start>{{</start>
+              <end>}}</end>
+
+              <include>
+                <context ref="python:python"/>
+              </include>
+            </context>
+
+            <context ref="html:html"/>
+          </include>
+        </context>
+      </include>
+    </context>        
+  </definitions>
+</language>
