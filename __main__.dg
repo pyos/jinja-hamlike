@@ -1,0 +1,5 @@
+import '/sys/stdin'
+import 'hamlike/Hamlike'
+
+h = Hamlike stdin.read! '<stdin>'
+print $ h.block

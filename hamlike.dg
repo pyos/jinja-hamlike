@@ -1,0 +1,100 @@
+import '/re'
+import '/dg/Node'
+import '/dg/Parser'
+import '/dg/Ending'
+
+
+Unary  = subclass Node  where __ast_init__ = @data ~>
+Space  = subclass Unary where
+Text   = subclass Unary where
+Expr   = subclass Unary where
+
+
+Binary = subclass Node where 
+  # FIXME isn't easily extendable.
+  EXT  = set!  # Extension nodes are auto-indented when following another node.
+  VOID = set!  # Void nodes have no closing tag.
+  __ast_init__ = @kind @data ~>
+    @ext  = @kind in @EXT
+    @void = @kind in @VOID or @ext
+
+
+Control = subclass Binary where
+  EXT  = set' 'else' 'elif' 'pluralize'
+  VOID = set' 'extends' 'from' 'include' 'set' 'import' 'do' 'break' 'continue'
+
+
+HTMLTag = subclass Binary where
+  # Taken from the HTML5 spec.
+  VOID = set' '!doctype' 'area' 'base' 'br' 'col' 'command' 'embed' 'hr' 'img' |
+         set' 'input' 'keygen' 'link' 'meta' 'param' 'source' 'track' 'wbr'
+
+
+Hamlike = subclass Parser where
+  trim    = False
+  htmltag = staticmethod $ x -> '<'  + x +  '>'
+  control = staticmethod $ x -> '{%' + x + '%}'
+  expr    = staticmethod $ x -> '{{' + x + '}}'
+
+  regex = re.compile r'''(?imx)
+     (?P<newline>  \s*\n(?P<indent>\ *))
+    |(?P<space>    \ +)
+    |(?P<arrow>    ->)
+    |(?P<tag>      %  \ *(?P<tag_data>
+       (?P<tag_name>!?\w+)
+       (?:'(?:[^\\]|\\.)*?' | "(?:[^\\]|\\.)*?" | [^-\n]+ | -)*? (?=$|->)
+     ))
+    |(?P<comment>  //  .*)
+    |(?P<control>  -  \ *(?P<control_data>(?P<control_name>\w+)(?:\ .*)?))
+    |(?P<expr>     =  \ *(?P<expr_data>.*))
+    |(?P<escape>   \\ \ *(?P<escape_data>.*))
+    |(?P<text>     [^=%\-].*)
+    |.
+  '''
+
+  token = pos f m ~> if
+    f == 'space'   => next self
+    f == 'arrow'   => next self where @indent.append $ last @indent + 2
+    f == 'newline' => next self where
+      level = len $ m.group 'indent'
+      @append $ Space $ if (@trim => ' ') (otherwise => m.group 0)
+      if    level <= last @indent => @append $ Ending ''
+      if    level >  last @indent => @indent.append level
+      while level != last @indent =>
+        @append $ Ending ''
+        @indent.pop!
+        @indent or @error 'no matching indentation level' @location
+    f == 'expr'    => Expr   $ m.group 'expr_data'
+    f == 'comment' => Text ''
+    f == 'text'    => Text   $ m.group 'text'
+    f == 'escape'  => Text   $ m.group 'escape_data'
+    f == 'control' => Control (m.group 'control_name') (m.group 'control_data')
+    f == 'tag'     => HTMLTag (m.group 'tag_name')     (m.group 'tag_data')
+    otherwise      => @error 'invalid input' pos
+
+  block =   ~> ''.join $ map @node $ takewhile (x -> not $ x :: Ending) self
+  node  = x ~> if
+    x :: Space   => x.data
+    x :: Text    => x.data + @block
+    x :: Expr    => @expr    x.data + @block
+    x :: Control => @control x.data + @block + @binary x (@control $ 'end' + x.kind)
+    x :: HTMLTag => @htmltag x.data + @block + @binary x (@htmltag $ '/'   + x.kind)
+
+  binary = x end ~> ''.join
+    where if not x.void =>
+      # Put all line breaks and additional clauses before the closing tag.
+      while (z = next self) :: Space or (z :: type x and z.ext) => yield $ @node z
+      yield end
+      @append z
+
+
+HamlikeExtension = except
+  err => import '/jinja2/ext/Extension'
+  err :: ImportError => None
+  err is None        => subclass Extension where preprocess = data name *: _ ~> if
+    name.endswith '.hamlike' => n.block where
+      n = Hamlike data name
+      n.trim    =  @environment.trim_blocks
+      n.control = x -> @environment.block_start_string    + x + @environment.block_end_string
+      n.expr    = x -> @environment.variable_start_string + x + @environment.variable_end_string
+    otherwise => data
