@@ -9,6 +9,6 @@ setup(
     author_email='pyos100500@gmail.com',
     url='https://github.com/pyos/jinja-hamlike',
     packages=['hamlike'],
-    package_dir={'hamlike': '.'},
+    package_dir={'hamlike': 'hamlike'},
     package_data={'hamlike': ['*.dg']}
 )
