@@ -12,8 +12,8 @@ from hamlike import HamlikeExtension
 environment.add_extension(HamlikeExtension)
 ```
 
-where `environment` is an [Environment]() instance
-(e.g. `jinja_env` attribute of [Flask]() objects.)
+where `environment` is an [Environment](http://jinja.pocoo.org/docs/api/#high-level-api) instance
+(e.g. `jinja_env` attribute of [Flask](http://flask.pocoo.org/docs/api/#application-object) objects.)
 
 #### Stand-alone
 
