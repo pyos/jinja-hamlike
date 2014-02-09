@@ -75,6 +75,7 @@ python -m dg -m hamlike < input_file > output_file
       // characters, prefix it with `\`.
       \- is a literal dash.
       \\ this applies to <code>\</code> itself, too.
+      \In fact, you can prefix any line with a backslash. It will simply be ignored.
 
     // Oh, and inline HTML/Jinja tags are allowed, too.
     %footer class="text-{{ 'muted' }}"
