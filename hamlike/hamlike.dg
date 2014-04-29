@@ -1,23 +1,23 @@
 import '/re'
-import '/dg/Node'
 import '/dg/Parser'
 import '/dg/Ending'
 
 
-Unary = subclass Node  where __ast_init__ = @data ~>
-Text  = subclass Unary where
-Expr  = subclass Unary where
-Block = subclass Text  where
-Space = subclass Text  where
+Unary = subclass object where __init__ = @data ~>
+Text  = subclass Unary  where
+Expr  = subclass Unary  where
+Block = subclass Text   where
+Space = subclass Text   where
 
 
-Binary = subclass Node where 
+Binary = subclass object where 
   # FIXME isn't easily extendable.
   EXT  = set!  # Extension nodes are auto-indented when following another node.
   VOID = set!  # Void nodes have no closing tag.
-  __ast_init__ = @kind @data ~>
+  __init__ = @kind @data ~>
     @ext  = @kind in @EXT
     @void = @kind in @VOID or @ext
+    None
 
 
 Control = subclass Binary where
@@ -60,7 +60,7 @@ Hamlike = subclass Parser where
       level = len $ m.group 'indent'
       @append $ Space $ if (@trim => ' ') (otherwise => m.group 0)
       while @indent and level <= last @indent =>
-        @append $ Ending ''
+        @append $ Ending pos ''
         @indent.pop!
       @indent.append level
     f == 'comment' => Text ''
