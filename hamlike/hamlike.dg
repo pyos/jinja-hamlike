@@ -41,10 +41,10 @@ Hamlike = subclass Parser where
      (?P<newline>  \s*\n(?P<indent>\ *))
     |(?P<space>    \ +)
     |(?P<arrow>    ->)
-    |(?P<tag>      %  \ *(?P<tag_data>
-       (?P<tag_name>!?\w+)
-       (?:'(?:[^\\]|\\.)*?' | "(?:[^\\]|\\.)*?" | [^-\n]+ | -)*? (?=$|->)
-     ))
+    |(?P<tag>      %  \ *
+       (?P<tag_name>!?\w+)(?P<tag_class>(?:\.[\w-]+)*)
+       (?P<tag_data>(?:'(?:[^\\]|\\.)*?' | "(?:[^\\]|\\.)*?" | [^-\n]+? | -)*?) \ *(?=$|->)
+     )
     |(?P<comment>  //  .*)
     |(?P<control>  -  \ *(?P<control_data>(?P<control_name>\w+)(?:\ .*)?))
     |(?P<expr>     =  \ *(?P<expr_data>.*))
@@ -68,7 +68,11 @@ Hamlike = subclass Parser where
     f == 'escape'  => Text   $ m.group 'escape_data'
     f == 'expr'    => Expr   $ m.group 'expr_data'
     f == 'control' => Control (m.group 'control_name') (m.group 'control_data')
-    f == 'tag'     => HTMLTag (m.group 'tag_name')     (m.group 'tag_data')
+    f == 'tag'     => HTMLTag (m.group 'tag_name') $
+      x = m.group 'tag_name'
+      y = m.group 'tag_data'
+      z = m.group 'tag_class'
+      x + y + (bool z * ' class="{}"'.format (z.replace '.' ' '))
     otherwise      => @error 'invalid input' pos
 
   block =   ~> Block $ ''.join $ map @node $ takewhile (x -> not $ x :: Ending) self
