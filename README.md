@@ -67,7 +67,7 @@ python -m dg -m hamlike < input_file > output_file
       This is an example page intended to showcase hamlike syntax.<br>
       You may have noticed that it contains a lot of blank lines when rendered;<br>
       that's what's left of the comments. Hamlike preserves all line breaks<br>
-      to make debugging easier. Set <code>environment.trim_blocks</code> to <code>True</code>
+      to make debugging easier. Set <code>environment.trim_hamlike</code> to <code>True</code>
       if you want to strip redundant whitespace for some reason.
 
     %p id="escape-example"
