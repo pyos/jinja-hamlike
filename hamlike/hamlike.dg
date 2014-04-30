@@ -80,10 +80,18 @@ Hamlike = subclass Parser where
 
   binary = x end ~> ''.join
     where if not x.void =>
-      # Put all line breaks and additional clauses before the closing tag.
-      while (z = next self) :: Space or z :: Block or (z :: type x and z.ext) => yield $ @node z
+      lastblock = 0  # Pointer to the `subnode` after the last non-`Space`.
+      subnodes  = list
+        where for (i, z) in enumerate self => if
+          z :: Space            => yield z
+          z :: Block            => yield z, (lastblock := i + 1)
+          z :: type x and z.ext => yield z, (lastblock := i + 1)
+          otherwise             => yield z, break!
+
+      # The whitespace after `lastblock` does not belong to this node.
+      @extend    $ reversed  $ subnodes !! slice lastblock None
+      yield from $ map @node $ subnodes !! slice None lastblock
       yield end
-      @append z
 
 
 HamlikeExtension = except
