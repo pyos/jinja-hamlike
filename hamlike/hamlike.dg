@@ -72,7 +72,7 @@ Hamlike = subclass Parser where
       x = m.group 'tag_name'
       y = m.group 'tag_data'
       z = m.group 'tag_class'
-      x + y + (bool z * ' class="{}"'.format (z.replace '.' ' '))
+      x + y + (bool z * ' class="{}"'.format (z.replace '.' ' ').strip!)
     otherwise      => @error 'invalid input' pos
 
   block =   ~> Block $ ''.join $ map @node $ takewhile (x -> not $ x :: Ending) self
