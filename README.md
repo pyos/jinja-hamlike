@@ -28,10 +28,10 @@ get preprocessed!
 #### Stand-alone
 
 ```python
-from hamlike import Hamlike
+import hamlike
 
-h = Hamlike('%h1 -> Hello, World!', 'filename')
-print(h.block.data)
+# parse(document, [filename], [subclass of hamlike.Hamlike])
+print(hamlike.parse('%h1 -> Hello, World!', 'filename'))
 ```
 
 #### CLI
