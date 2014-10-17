@@ -37,7 +37,7 @@ print(hamlike.parse('%h1 -> Hello, World!', 'filename'))
 #### CLI
 
 ```sh
-python -m dg -m hamlike < input_file > output_file
+python -m dg -m hamlike --trim < input_file > output_file
 ```
 
 ### Syntax

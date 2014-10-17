@@ -1,5 +1,7 @@
+import '/sys/argv'
 import '/sys/stdin'
 import 'hamlike/Hamlike'
 
-h = Hamlike stdin.read! '<stdin>'
+H = subclass Hamlike where trim = '--trim' in argv or '-t' in argv
+h = H stdin.read! '<stdin>'
 print $ h.block.data
